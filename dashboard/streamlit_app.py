@@ -36,7 +36,11 @@ st.set_page_config(
     page_icon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzE4NTZiNCIgZD0iTTEyIDJMMyA3djVjMCA1LjU1IDMuODQgMTAuNzQgOSAxMiA1LjE2LTEuMjYgOS02LjQ1IDktMTJWN3oiLz48L3N2Zz4=",
     layout="wide",
     initial_sidebar_state="expanded",
+    menu_items={},
 )
+
+# Forzar tema claro siempre
+st._config.set_option("theme.base", "light")
 
 init_db()
 
@@ -168,11 +172,11 @@ LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width=
   <path fill="white" d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9z"/>
 </svg>"""
 NAV_ITEMS = [
-    ("auditar",    "Auditar Factura"),
-    ("historial",  "Historial"),
-    ("metricas",   "Metricas"),
-    ("siniestros", "Siniestros"),
-    ("tarifario",  "Tarifario"),
+    ("auditar",    "Auditar Factura",  "&#x2713;"),
+    ("historial",  "Historial",        "&#x1F4C4;"),
+    ("metricas",   "Metricas",         "&#x1F4CA;"),
+    ("siniestros", "Siniestros",       "&#x26A0;"),
+    ("tarifario",  "Tarifario",        "&#x24;"),
 ]
 
 # ─── Session state ────────────────────────────────────────────────────────────
@@ -196,8 +200,8 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="nav-section">Navegacion</div>', unsafe_allow_html=True)
-    for key, label in NAV_ITEMS:
-        if st.button(label, key=f"nav_{key}", use_container_width=True):
+    for key, label, icon in NAV_ITEMS:
+        if st.button(f"{icon}  {label}", key=f"nav_{key}", use_container_width=True):
             st.session_state.pagina = key
             st.rerun()
 
@@ -210,11 +214,25 @@ with st.sidebar:
         st.markdown('<span style="font-size:0.72rem;color:#f59e0b">Datos de demo visibles</span>',
                     unsafe_allow_html=True)
     st.markdown("---")
-    if st.button("Acerca del equipo", key="nav_equipo", use_container_width=True):
+    if st.button("&#x1F465;  Acerca del equipo", key="nav_equipo", use_container_width=True):
         st.session_state.mostrar_equipo = True
         st.rerun()
-    st.markdown('<span style="font-size:0.7rem;color:#334155">v1.0.0 · Gemini 2.0 Flash</span>',
-                unsafe_allow_html=True)
+    st.markdown("""
+    <a href="https://github.com/tomvargasd/facturase_HACKIATHON" target="_blank"
+       style="display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;border-radius:8px;
+              color:#94a3b8 !important;text-decoration:none;font-size:0.8rem;font-weight:500;
+              transition:background 0.15s" 
+       onmouseover="this.style.background='rgba(255,255,255,0.07)'"
+       onmouseout="this.style.background='transparent'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#94a3b8">
+            <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        Ver en GitHub
+    </a>
+    <div style="padding:0.4rem 1rem">
+        <span style="font-size:0.7rem;color:#334155">v1.0.0 · Gemini 2.0 Flash</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ─── Modal equipo ────────────────────────────────────────────────────────────
 
