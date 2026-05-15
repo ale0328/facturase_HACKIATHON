@@ -230,7 +230,7 @@ with st.sidebar:
         Ver en GitHub
     </a>
     <div style="padding:0.4rem 1rem">
-        <span style="font-size:0.7rem;color:#334155">v1.0.0 · Gemini 2.0 Flash</span>
+        <span style="font-size:0.7rem;color:#334155">v1.0.0 · Gemini 2.5 Flash</span>
     </div>
     """, unsafe_allow_html=True)
 
