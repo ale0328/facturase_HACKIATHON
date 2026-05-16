@@ -1,3 +1,5 @@
+import random
+
 def gen_captcha() -> dict:
     ops = [('+', lambda a, b: a + b), ('-', lambda a, b: a - b), ('x', lambda a, b: a * b)]
     a = random.randint(2, 12)
