@@ -143,6 +143,15 @@ html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 }
 .stButton > button[kind="primary"]:hover { background:#1447a0 !important; }
 #MainMenu, footer { visibility:hidden; }
+
+.stButton > button[kind="secondary"]{
+    background: #3b82f6!important;;
+    color: #ffffff!important;
+}
+.navmenu button div{
+    display: inline!important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -163,12 +172,12 @@ LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width=
 
 # SVG icons used only inside st.markdown(unsafe_allow_html=True)
 ICON = {
-    "metricas":   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-    "auditar":    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
-    "cola":       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
-    "historial":  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
-    "siniestros": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
-    "tarifario":  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1856b4" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+    "metricas":   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+    "auditar":    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
+    "cola":       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+    "historial":  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+    "siniestros": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    "tarifario":  '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#fff" stroke="#1856b4" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
 }
 
 NAV_ITEMS = [
@@ -303,11 +312,13 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     st.markdown('<div style="padding:0.6rem 1.4rem 0.2rem 1.4rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#1e3550">Modulos</div>', unsafe_allow_html=True)
-
+    
+    st.markdown('<div class="navmenu">', unsafe_allow_html=True)
     for key, label in NAV_ITEMS:
         if st.button(label, key=f"nav_{key}", use_container_width=True):
             st.session_state.pagina = key
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<hr style="border:none;border-top:1px solid #0f1e30;margin:0.5rem 0">', unsafe_allow_html=True)
     st.markdown('<div style="padding:0.3rem 1.4rem 0.2rem 1.4rem;font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#1e3550">Configuracion</div>', unsafe_allow_html=True)
