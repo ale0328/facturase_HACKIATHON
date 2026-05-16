@@ -37,6 +37,9 @@ from app.database import (
 from app.orquestador import auditar_factura
 from data.demo_data import FACTURAS_DEMO, DEMO_SINIESTRO_MAP
 
+import dashboard.styles
+from dashboard.login import gen_captcha, login
+
 # ─── Config ───────────────────────────────────────────────────────────────────
 
 st.set_page_config(
@@ -50,110 +53,9 @@ st.set_page_config(
 st._config.set_option("theme.base", "light")
 init_db()
 
-# ─── CSS ──────────────────────────────────────────────────────────────────────
+# ─── Estilos ──────────────────────────────────────────────────────────────────────
 
-st.markdown("""
-<style>
-html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
-
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #090f1a 0%, #0d1829 40%, #0b1422 100%) !important;
-    border-right: 1px solid #162236;
-}
-[data-testid="stSidebar"] > div:first-child { padding-top: 0 !important; }
-[data-testid="stSidebar"] * { color: #8fadc8 !important; }
-[data-testid="stSidebar"] .stButton > button {
-    width: 100%; background: transparent !important; border: none !important;
-    color: #5a7d9a !important; text-align: left !important;
-    padding: 0.58rem 1.4rem !important; border-radius: 0 !important;
-    font-size: 0.84rem !important; font-weight: 500 !important;
-    transition: all 0.12s ease !important; margin-bottom: 0 !important;
-    border-left: 3px solid transparent !important; letter-spacing: 0.01em !important;
-}
-[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(59,130,246,0.08) !important;
-    color: #c8ddf0 !important; border-left-color: #3b82f6 !important;
-}
-
-/* ── Metrics ── */
-[data-testid="metric-container"] {
-    background: #f8fafc; border: 1px solid #e2e8f0;
-    border-radius: 12px; padding: 1rem 1.25rem !important;
-}
-[data-testid="metric-container"] [data-testid="stMetricLabel"] {
-    font-size: 0.74rem !important; color: #64748b !important;
-    font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.05em;
-}
-[data-testid="metric-container"] [data-testid="stMetricValue"] {
-    font-size: 1.5rem !important; font-weight: 700 !important; color: #0f172a !important;
-}
-
-/* ── Page elements ── */
-.page-header {
-    display: flex; align-items: center; gap: 0.75rem;
-    margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0;
-}
-.page-header h2 { margin:0; font-size:1.35rem; font-weight:700; color:#0f172a; }
-.page-header p  { margin:0; font-size:0.82rem; color:#64748b; }
-
-.badge { display:inline-flex; align-items:center; gap:0.35rem; padding:0.28rem 0.9rem; border-radius:9999px; font-weight:700; font-size:0.84rem; }
-.badge-APROBADA  { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
-.badge-OBSERVADA { background:#fef9c3; color:#854d0e; border:1px solid #fde047; }
-.badge-RECHAZADA { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
-
-.dictamen-card {
-    background:#ffffff; border:1px solid #e2e8f0; border-radius:14px;
-    padding:1.25rem; margin-bottom:1rem; box-shadow:0 1px 4px rgba(0,0,0,0.05);
-}
-.alerta-revision {
-    background:#fff7ed; border:1px solid #fed7aa; border-left:4px solid #f97316;
-    border-radius:8px; padding:0.65rem 1rem; color:#9a3412; font-size:0.85rem; margin:0.6rem 0;
-}
-.alerta-ok {
-    background:#f0fdf4; border:1px solid #bbf7d0; border-left:4px solid #22c55e;
-    border-radius:8px; padding:0.65rem 1rem; color:#166534; font-size:0.85rem; margin:0.6rem 0;
-}
-.quick-card {
-    background:#fff; border:1px solid #e2e8f0; border-radius:14px;
-    padding:1.1rem; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.04);
-    margin-bottom:0.25rem;
-}
-.queue-item {
-    background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;
-    padding:0.65rem 1rem; margin-bottom:0.4rem;
-}
-
-/* ── Login ── */
-.login-card {
-    background:#fff; border-radius:20px; padding:2.5rem 2rem;
-    box-shadow:0 20px 60px rgba(0,0,0,0.10); border:1px solid #e2e8f0;
-}
-
-/* ── Misc ── */
-@media (max-width:768px) {
-    .page-header h2 { font-size:1.1rem; }
-    [data-testid="metric-container"] [data-testid="stMetricValue"] { font-size:1.1rem !important; }
-}
-[data-testid="stDataFrame"] { border-radius:10px; overflow:hidden; }
-[data-testid="stExpander"]  { border:1px solid #e2e8f0 !important; border-radius:10px !important; }
-.stButton > button[kind="primary"] {
-    background:#1856b4 !important; border:none !important;
-    border-radius:8px !important; font-weight:600 !important;
-}
-.stButton > button[kind="primary"]:hover { background:#1447a0 !important; }
-#MainMenu, footer { visibility:hidden; }
-
-.stButton > button[kind="secondary"]{
-    background: #3b82f6!important;;
-    color: #ffffff!important;
-}
-.navmenu button div{
-    display: inline!important;
-}
-
-</style>
-""", unsafe_allow_html=True)
+st.markdown(dashboard.styles.rawStyles(), unsafe_allow_html=True)
 
 # ─── Constantes ───────────────────────────────────────────────────────────────
 
@@ -191,18 +93,7 @@ NAV_ITEMS = [
 
 # ─── Captcha ──────────────────────────────────────────────────────────────────
 
-def generar_captcha() -> dict:
-    ops = [('+', lambda a, b: a + b), ('-', lambda a, b: a - b), ('x', lambda a, b: a * b)]
-    a = random.randint(2, 12)
-    b = random.randint(1, 9)
-    op_sym, op_fn = random.choice(ops)
-    if op_sym == '-' and b > a:
-        a, b = b, a
-    if op_sym == 'x':
-        a, b = random.randint(2, 6), random.randint(2, 6)
-    return {"a": a, "b": b, "op": op_sym, "answer": op_fn(a, b)}
-
-# ─── Session state inicial ────────────────────────────────────────────────────
+generar_captcha = gen_captcha 
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -210,84 +101,12 @@ if "logged_in" not in st.session_state:
 if "captcha" not in st.session_state:
     st.session_state.captcha = generar_captcha()
 
-# ══════════════════════════════════════════════════════════════════════════════
-# LOGIN
-# ══════════════════════════════════════════════════════════════════════════════
+# ─── Login.  ──────────────────────────────────────────────────────────────────
 
-if not st.session_state.logged_in:
-    _, col_c, _ = st.columns([1, 1.1, 1])
-    with col_c:
-        cap = st.session_state.captcha
-        st.markdown(f"""
-        <div style="margin-top:6vh" class="login-card">
-            <div style="text-align:center;margin-bottom:1.75rem">
-                {LOGO_SVG}
-                <h1 style="font-size:1.9rem;font-weight:800;color:#0f172a;
-                           letter-spacing:-0.03em;margin:0.4rem 0 0.15rem 0">Facturase</h1>
-                <p style="color:#64748b;font-size:0.82rem;margin:0">
-                    Sistema de auditoria inteligente de facturas</p>
-            </div>
-            <hr style="border:none;border-top:1px solid #f1f5f9;margin:0 0 1.4rem 0">
-        </div>
-        """, unsafe_allow_html=True)
-
-        with st.form("login_form"):
-            st.markdown('<p style="font-size:0.82rem;font-weight:600;color:#374151;margin-bottom:0.2rem">Usuario</p>', unsafe_allow_html=True)
-            username_in = st.text_input("Usuario", placeholder="Tu nombre de usuario", label_visibility="collapsed")
-            st.markdown('<p style="font-size:0.82rem;font-weight:600;color:#374151;margin:0.75rem 0 0.2rem 0">Contrasena</p>', unsafe_allow_html=True)
-            password_in = st.text_input("Contrasena", type="password", placeholder="Tu contrasena", label_visibility="collapsed")
-            st.markdown(f"""
-            <div style="margin:0.9rem 0 0.3rem 0">
-                <p style="font-size:0.8rem;font-weight:600;color:#374151;margin-bottom:0.4rem">
-                    Verificacion de seguridad</p>
-                <div style="background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:10px;
-                            padding:0.7rem;text-align:center;font-size:1.25rem;font-weight:700;
-                            color:#0f172a;letter-spacing:0.2em;font-family:monospace">
-                    {cap['a']} &nbsp; {cap['op']} &nbsp; {cap['b']} &nbsp; = &nbsp; ?
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            captcha_in = st.text_input("Resultado del captcha", placeholder="Escribe el resultado", label_visibility="collapsed")
-            submitted = st.form_submit_button("Ingresar al sistema", type="primary", use_container_width=True)
-
-            if submitted:
-                try:
-                    captcha_ok = int(captcha_in.strip()) == st.session_state.captcha["answer"]
-                except ValueError:
-                    captcha_ok = False
-
-                if not captcha_ok:
-                    st.error("Verificacion incorrecta. Intenta de nuevo.")
-                    st.session_state.captcha = generar_captcha()
-                    st.rerun()
-                elif not username_in.strip() or not password_in:
-                    st.error("Completa todos los campos.")
-                elif verificar_usuario(username_in.strip(), password_in):
-                    st.session_state.logged_in = True
-                    st.session_state.username = username_in.strip()
-                    st.session_state.captcha = generar_captcha()
-                    st.rerun()
-                else:
-                    st.error("Credenciales incorrectas.")
-                    st.session_state.captcha = generar_captcha()
-                    st.rerun()
-
-        if listar_usuarios_count() == 0:
-            st.markdown("""
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;
-                        padding:0.75rem 1rem;margin-top:0.75rem;font-size:0.82rem;color:#9a3412">
-                <strong>Sin usuarios configurados.</strong><br>
-                Ejecuta en consola del servidor:<br>
-                <code style="background:#fef3c7;padding:2px 6px;border-radius:4px">
-                    python -m scripts.add_user
-                </code>
-            </div>
-            """, unsafe_allow_html=True)
-    st.stop()
+login(st, verificar_usuario, listar_usuarios_count)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN APP
-# ══════════════════════════════════════════════════════════════════════════════
 
 if "pagina" not in st.session_state:
     st.session_state.pagina = "metricas"
@@ -331,9 +150,12 @@ with st.sidebar:
 
     st.markdown('<hr style="border:none;border-top:1px solid #0f1e30;margin:0.5rem 0">', unsafe_allow_html=True)
 
+    st.markdown('<div class="altbuton">', unsafe_allow_html=True)
     if st.button("Acerca del equipo", key="nav_equipo", use_container_width=True):
         st.session_state.mostrar_equipo = True
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
     st.markdown(f"""
     <a href="https://github.com/tomvargasd/facturase_HACKIATHON" target="_blank"
@@ -515,27 +337,38 @@ if pagina == "metricas":
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Nueva auditoria</div>
             <div style="font-size:0.75rem;color:#64748b">Analiza una factura individualmente</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Auditar", key="qa_auditar", use_container_width=True):
             st.session_state.pagina = "auditar"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
+
     with qa2:
         st.markdown("""<div class="quick-card">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Agregar a cola</div>
             <div style="font-size:0.75rem;color:#64748b">Acumula casos para procesar en lote</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Cola", key="qa_cola", use_container_width=True):
             st.session_state.pagina = "cola"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
+
     with qa3:
         st.markdown("""<div class="quick-card">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Nuevo siniestro</div>
             <div style="font-size:0.75rem;color:#64748b">Registra un expediente nuevo</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Siniestros", key="qa_siniestros", use_container_width=True):
             st.session_state.pagina = "siniestros"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
 
     st.divider()
     auditorias = listar_auditorias(500)
