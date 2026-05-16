@@ -5,6 +5,8 @@ Usa un context manager para conexiones seguras.
 """
 import sqlite3
 import json
+import os
+import hashlib
 from contextlib import contextmanager
 from app.config import DB_PATH
 
@@ -65,6 +67,24 @@ def init_db() -> None:
                 razonamiento            TEXT NOT NULL,
                 recomendacion           TEXT NOT NULL,
                 timestamp               TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                username      TEXT UNIQUE NOT NULL,
+                password_hash TEXT NOT NULL,
+                created_at    TEXT DEFAULT (datetime('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS cola_pendientes (
+                id             INTEGER PRIMARY KEY AUTOINCREMENT,
+                siniestro_id   TEXT NOT NULL,
+                nombre_factura TEXT NOT NULL,
+                factura_json   TEXT NOT NULL,
+                estado         TEXT DEFAULT 'pendiente',
+                error_msg      TEXT,
+                created_at     TEXT DEFAULT (datetime('now')),
+                procesado_at   TEXT
             );
         """)
 
@@ -199,3 +219,95 @@ def crear_siniestro(s: dict) -> None:
 def eliminar_siniestro(siniestro_id: str) -> None:
     with get_db() as conn:
         conn.execute("DELETE FROM siniestros WHERE id = ?", (siniestro_id,))
+
+
+# ─── Usuarios ────────────────────────────────────────────────────────────────
+
+def _hash_password(password: str) -> str:
+    salt = os.urandom(16).hex()
+    key = hashlib.pbkdf2_hmac('sha256', password.encode(), bytes.fromhex(salt), 100_000).hex()
+    return f"{salt}:{key}"
+
+
+def _verify_password(password: str, stored: str) -> bool:
+    try:
+        salt_hex, key_hex = stored.split(':')
+        key = hashlib.pbkdf2_hmac('sha256', password.encode(), bytes.fromhex(salt_hex), 100_000).hex()
+        return key == key_hex
+    except Exception:
+        return False
+
+
+def agregar_usuario(username: str, password: str) -> bool:
+    with get_db() as conn:
+        try:
+            conn.execute(
+                "INSERT INTO usuarios (username, password_hash) VALUES (?, ?)",
+                (username.strip(), _hash_password(password)),
+            )
+            return True
+        except Exception:
+            return False
+
+
+def verificar_usuario(username: str, password: str) -> bool:
+    with get_db() as conn:
+        row = conn.execute(
+            "SELECT password_hash FROM usuarios WHERE username = ?", (username,)
+        ).fetchone()
+    if not row:
+        return False
+    return _verify_password(password, row['password_hash'])
+
+
+def listar_usuarios_count() -> int:
+    with get_db() as conn:
+        return conn.execute("SELECT COUNT(*) FROM usuarios").fetchone()[0]
+
+
+# ─── Cola de pendientes ───────────────────────────────────────────────────────
+
+def agregar_a_cola(siniestro_id: str, nombre_factura: str, factura: dict) -> int:
+    with get_db() as conn:
+        cur = conn.execute(
+            "INSERT INTO cola_pendientes (siniestro_id, nombre_factura, factura_json) VALUES (?, ?, ?)",
+            (siniestro_id, nombre_factura, json.dumps(factura, ensure_ascii=False)),
+        )
+        return cur.lastrowid
+
+
+def listar_cola(estado: str | None = None) -> list[dict]:
+    with get_db() as conn:
+        if estado:
+            rows = conn.execute(
+                "SELECT * FROM cola_pendientes WHERE estado = ? ORDER BY created_at", (estado,)
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT * FROM cola_pendientes ORDER BY created_at DESC"
+            ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def actualizar_estado_cola(id: int, estado: str, error_msg: str | None = None) -> None:
+    with get_db() as conn:
+        if estado in ('completado', 'error'):
+            conn.execute(
+                "UPDATE cola_pendientes SET estado=?, error_msg=?, procesado_at=datetime('now') WHERE id=?",
+                (estado, error_msg, id),
+            )
+        else:
+            conn.execute(
+                "UPDATE cola_pendientes SET estado=?, error_msg=? WHERE id=?",
+                (estado, error_msg, id),
+            )
+
+
+def eliminar_de_cola(id: int) -> None:
+    with get_db() as conn:
+        conn.execute("DELETE FROM cola_pendientes WHERE id = ?", (id,))
+
+
+def limpiar_cola_completados() -> None:
+    with get_db() as conn:
+        conn.execute("DELETE FROM cola_pendientes WHERE estado IN ('completado', 'error')")
