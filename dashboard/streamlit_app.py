@@ -144,7 +144,7 @@ html, body, [class*="css"] { font-family: 'Inter', 'Segoe UI', sans-serif; }
 .stButton > button[kind="primary"]:hover { background:#1447a0 !important; }
 #MainMenu, footer { visibility:hidden; }
 
-.stButton > button[kind="secondary"]{
+.altbuton .stButton > button[kind="secondary"]{
     background: #3b82f6!important;;
     color: #ffffff!important;
 }
@@ -331,9 +331,12 @@ with st.sidebar:
 
     st.markdown('<hr style="border:none;border-top:1px solid #0f1e30;margin:0.5rem 0">', unsafe_allow_html=True)
 
+    st.markdown('<div class="altbuton">', unsafe_allow_html=True)
     if st.button("Acerca del equipo", key="nav_equipo", use_container_width=True):
         st.session_state.mostrar_equipo = True
         st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
 
     st.markdown(f"""
     <a href="https://github.com/tomvargasd/facturase_HACKIATHON" target="_blank"
@@ -515,27 +518,38 @@ if pagina == "metricas":
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Nueva auditoria</div>
             <div style="font-size:0.75rem;color:#64748b">Analiza una factura individualmente</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Auditar", key="qa_auditar", use_container_width=True):
             st.session_state.pagina = "auditar"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
+
     with qa2:
         st.markdown("""<div class="quick-card">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Agregar a cola</div>
             <div style="font-size:0.75rem;color:#64748b">Acumula casos para procesar en lote</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Cola", key="qa_cola", use_container_width=True):
             st.session_state.pagina = "cola"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
+
     with qa3:
         st.markdown("""<div class="quick-card">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <div style="font-weight:600;color:#0f172a;margin-top:0.45rem;font-size:0.88rem">Nuevo siniestro</div>
             <div style="font-size:0.75rem;color:#64748b">Registra un expediente nuevo</div>
         </div>""", unsafe_allow_html=True)
+
+        st.markdown('<div class="altbuton">', unsafe_allow_html=True)
         if st.button("Ir a Siniestros", key="qa_siniestros", use_container_width=True):
             st.session_state.pagina = "siniestros"
             st.rerun()
+        st.markdown('<div>', unsafe_allow_html=True)
 
     st.divider()
     auditorias = listar_auditorias(500)
