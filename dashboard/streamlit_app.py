@@ -85,7 +85,7 @@ ICON = {
 NAV_ITEMS = [
     ("metricas",   "Dashboard"),
     ("auditar",    "Auditar Factura"),
-    ("cola",       "Cola de Procesamiento"),
+    ("cola",       "Cola de revisión"),
     ("historial",  "Historial"),
     ("siniestros", "Siniestros"),
     ("tarifario",  "Tarifario"),
@@ -103,7 +103,7 @@ if "captcha" not in st.session_state:
 
 # ─── Login.  ──────────────────────────────────────────────────────────────────
 
-login(st, verificar_usuario, listar_usuarios_count)
+login(st, verificar_usuario, listar_usuarios_count, LOGO_SVG)
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN APP

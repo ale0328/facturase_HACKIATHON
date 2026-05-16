@@ -11,7 +11,7 @@ def gen_captcha() -> dict:
         a, b = random.randint(2, 6), random.randint(2, 6)
     return {"a": a, "b": b, "op": op_sym, "answer": op_fn(a, b)}
 
-def login(st, verificar_usuario, listar_usuarios_count):
+def login(st, verificar_usuario, listar_usuarios_count, LOGO_SVG):
     if not st.session_state.logged_in:
         _, col_c, _ = st.columns([1, 1.1, 1])
         with col_c:
@@ -56,18 +56,18 @@ def login(st, verificar_usuario, listar_usuarios_count):
 
                     if not captcha_ok:
                         st.error("Verificacion incorrecta. Intenta de nuevo.")
-                        st.session_state.captcha = generar_captcha()
+                        st.session_state.captcha = gen_captcha()
                         st.rerun()
                     elif not username_in.strip() or not password_in:
                         st.error("Completa todos los campos.")
                     elif verificar_usuario(username_in.strip(), password_in):
                         st.session_state.logged_in = True
                         st.session_state.username = username_in.strip()
-                        st.session_state.captcha = generar_captcha()
+                        st.session_state.captcha = gen_captcha()
                         st.rerun()
                     else:
                         st.error("Credenciales incorrectas.")
-                        st.session_state.captcha = generar_captcha()
+                        st.session_state.captcha = gen_captcha()
                         st.rerun()
 
             if listar_usuarios_count() == 0:
